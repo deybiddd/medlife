@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedLife Partnership Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .medical-blue { color: #1e40af; }
+        .bg-medical-blue { background-color: #1e40af; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="min-h-screen">
+        <!-- Navigation -->
+        <nav class="bg-white shadow-sm border-b">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-16">
+                    <div class="flex items-center">
+                        <h1 class="text-xl font-semibold text-blue-600">
+                            MedLife Partnership Portal
+                        </h1>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+            <div class="text-center py-12">
+                <h1 class="text-4xl font-bold text-gray-900 mb-8">
+                    Join Our Medical Partnership Network
+                </h1>
+                <p class="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
+                    Connect with healthcare professionals and expand your practice. 
+                    Apply to become a partner and help us deliver quality healthcare services.
+                </p>
+                <button 
+                    onclick="window.location.href='#application'"
+                    class="inline-flex items-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors duration-200 cursor-pointer"
+                >
+                    Start Application
+                </button>
+            </div>
+
+            <!-- Application Section (hidden by default) -->
+            <div id="application" class="hidden">
+                <div class="max-w-2xl mx-auto">
+                    <h1 class="text-3xl font-bold text-gray-900 mb-8">
+                        Partnership Application
+                    </h1>
+                    <div class="bg-white p-6 rounded-lg shadow">
+                        <p class="text-gray-600 mb-4">
+                            Multi-step application form - This is where we'll implement the step-by-step process.
+                        </p>
+                        <button 
+                            onclick="goHome()"
+                            class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+                        >
+                            ← Back to Home
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Simple navigation
+        function showApplication() {
+            document.querySelector('.text-center').style.display = 'none';
+            document.getElementById('application').style.display = 'block';
+        }
+
+        function goHome() {
+            document.querySelector('.text-center').style.display = 'block';
+            document.getElementById('application').style.display = 'none';
+        }
+
+        // Handle button click
+        document.querySelector('button').addEventListener('click', function(e) {
+            e.preventDefault();
+            showApplication();
+        });
+    </script>
+</body>
+</html>

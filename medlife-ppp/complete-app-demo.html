@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedLife Partnership Portal - Complete Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+    <div class="min-h-screen">
+        <!-- Navigation -->
+        <nav class="bg-white shadow-sm border-b">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-16">
+                    <div class="flex items-center">
+                        <h1 class="text-xl font-semibold text-blue-600">
+                            MedLife Partnership Portal
+                        </h1>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+            <!-- Home Page -->
+            <div id="home-page" class="text-center py-12">
+                <h1 class="text-4xl font-bold text-gray-900 mb-8">
+                    Join Our Medical Partnership Network
+                </h1>
+                <p class="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
+                    Connect with healthcare professionals and expand your practice. 
+                    Apply to become a partner and help us deliver quality healthcare services.
+                </p>
+                <button 
+                    onclick="showApplication()"
+                    class="inline-flex items-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors duration-200 cursor-pointer"
+                >
+                    Start Application
+                </button>
+            </div>
+
+            <!-- Application Form -->
+            <div id="application-page" class="hidden">
+                <div class="text-center mb-8">
+                    <h1 class="text-3xl font-bold text-gray-900 mb-2">Partnership Application</h1>
+                    <p class="text-lg text-gray-600">Join our network of healthcare professionals</p>
+                </div>
+
+                <!-- Progress Indicator -->
+                <div class="w-full py-6">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="flex flex-col items-center">
+                                <div id="step-1" class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium bg-blue-600 text-white">1</div>
+                                <span class="mt-2 text-xs font-medium text-blue-600">Basic Info</span>
+                            </div>
+                            <div class="flex-1 h-1 mx-4 bg-gray-200" id="progress-1"></div>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="flex flex-col items-center">
+                                <div id="step-2" class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium bg-gray-200 text-gray-500">2</div>
+                                <span class="mt-2 text-xs font-medium text-gray-500">Professional</span>
+                            </div>
+                            <div class="flex-1 h-1 mx-4 bg-gray-200" id="progress-2"></div>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="flex flex-col items-center">
+                                <div id="step-3" class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium bg-gray-200 text-gray-500">3</div>
+                                <span class="mt-2 text-xs font-medium text-gray-500">Experience</span>
+                            </div>
+                            <div class="flex-1 h-1 mx-4 bg-gray-200" id="progress-3"></div>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="flex flex-col items-center">
+                                <div id="step-4" class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium bg-gray-200 text-gray-500">4</div>
+                                <span class="mt-2 text-xs font-medium text-gray-500">Preferences</span>
+                            </div>
+                            <div class="flex-1 h-1 mx-4 bg-gray-200" id="progress-4"></div>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="flex flex-col items-center">
+                                <div id="step-5" class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium bg-gray-200 text-gray-500">5</div>
+                                <span class="mt-2 text-xs font-medium text-gray-500">Documents</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Steps -->
+                <div class="bg-white rounded-lg shadow-lg p-8 mt-8">
+                    <!-- Step 1: Basic Information -->
+                    <div id="form-step-1" class="space-y-6">
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-900 mb-2">Basic Information</h2>
+                            <p class="text-gray-600">Let's start with your basic contact information.</p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">First Name <span class="text-red-500">*</span></label>
+                                <input type="text" placeholder="Enter your first name" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Last Name <span class="text-red-500">*</span></label>
+                                <input type="text" placeholder="Enter your last name" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Email Address <span class="text-red-500">*</span></label>
+                            <input type="email" placeholder="Enter your email address" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number <span class="text-red-500">*</span></label>
+                            <input type="tel" placeholder="Enter your phone number" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                    </div>
+
+                    <!-- Navigation Buttons -->
+                    <div class="flex justify-between mt-8 pt-6 border-t border-gray-200">
+                        <div>
+                            <button onclick="goHome()" class="px-6 py-3 rounded-md font-medium border-2 border-blue-600 text-blue-600 hover:bg-blue-50">
+                                ← Back to Home
+                            </button>
+                        </div>
+                        <div>
+                            <button onclick="nextStep()" class="px-6 py-3 rounded-md font-medium bg-blue-600 text-white hover:bg-blue-700">
+                                Next →
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 text-center text-sm text-gray-500">
+                    Your progress is automatically saved. You can return to complete this application later.
+                </div>
+            </div>
+
+            <!-- Success Page -->
+            <div id="success-page" class="hidden max-w-2xl mx-auto text-center py-12">
+                <div class="mb-8">
+                    <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-6">
+                        <svg class="h-8 w-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                    </div>
+                    <h1 class="text-3xl font-bold text-gray-900 mb-4">Application Submitted Successfully!</h1>
+                    <p class="text-lg text-gray-600 mb-8">Thank you for your interest in joining our medical partnership network. We have received your application and will review it carefully.</p>
+                </div>
+
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
+                    <h2 class="text-lg font-semibold text-blue-800 mb-3">What happens next?</h2>
+                    <div class="text-left space-y-3 text-blue-700">
+                        <div class="flex items-start">
+                            <span class="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-medium mr-3 mt-0.5">1</span>
+                            <span>Our team will review your application and credentials within 3-5 business days.</span>
+                        </div>
+                        <div class="flex items-start">
+                            <span class="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-medium mr-3 mt-0.5">2</span>
+                            <span>We may contact you for additional information or to schedule an interview.</span>
+                        </div>
+                        <div class="flex items-start">
+                            <span class="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-medium mr-3 mt-0.5">3</span>
+                            <span>You'll receive a notification about the status of your application via email.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-x-4">
+                    <button onclick="goHome()" class="px-6 py-3 rounded-md font-medium bg-blue-600 text-white hover:bg-blue-700">
+                        Return to Home
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        let currentStep = 1;
+
+        function showApplication() {
+            document.getElementById('home-page').style.display = 'none';
+            document.getElementById('application-page').style.display = 'block';
+        }
+
+        function goHome() {
+            document.getElementById('home-page').style.display = 'block';
+            document.getElementById('application-page').style.display = 'none';
+            document.getElementById('success-page').style.display = 'none';
+        }
+
+        function nextStep() {
+            // Simple demo - just show success page after first step
+            document.getElementById('application-page').style.display = 'none';
+            document.getElementById('success-page').style.display = 'block';
+        }
+
+        function updateProgress() {
+            // Update progress indicator (simplified for demo)
+            for (let i = 1; i <= 5; i++) {
+                const stepElement = document.getElementById(`step-${i}`);
+                const progressElement = document.getElementById(`progress-${i}`);
+                
+                if (i < currentStep) {
+                    stepElement.className = 'w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium bg-blue-600 text-white';
+                    stepElement.innerHTML = '✓';
+                    if (progressElement) progressElement.className = 'flex-1 h-1 mx-4 bg-blue-600';
+                } else if (i === currentStep) {
+                    stepElement.className = 'w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium bg-blue-100 text-blue-600 border-2 border-blue-600';
+                    stepElement.innerHTML = i;
+                } else {
+                    stepElement.className = 'w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium bg-gray-200 text-gray-500';
+                    stepElement.innerHTML = i;
+                    if (progressElement) progressElement.className = 'flex-1 h-1 mx-4 bg-gray-200';
+                }
+            }
+        }
+    </script>
+</body>
+</html>
