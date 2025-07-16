@@ -43,9 +43,11 @@ const Step3ExperienceBackground: React.FC<Step3Props> = ({ data, onChange, error
         label="Years of Medical Experience"
         type="number"
         value={data.yearsExperience}
-        onChange={(value) => handleChange('yearsExperience', parseInt(value) || 0)}
+        onChange={(value) => handleChange('yearsExperience', Math.max(0, parseInt(value) || 0))}
         placeholder="Total years of medical practice"
         required
+        min={0}
+        max={100}
         error={errors.yearsExperience?.toString()}
       />
 
@@ -63,9 +65,11 @@ const Step3ExperienceBackground: React.FC<Step3Props> = ({ data, onChange, error
         label="Average Patients Per Month"
         type="number"
         value={data.patientsPerMonth}
-        onChange={(value) => handleChange('patientsPerMonth', parseInt(value) || 0)}
+        onChange={(value) => handleChange('patientsPerMonth', Math.max(0, parseInt(value) || 0))}
         placeholder="Approximate number of patients you see monthly"
         required
+        min={0}
+        max={10000}
         error={errors.patientsPerMonth?.toString()}
       />
 

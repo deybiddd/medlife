@@ -9,6 +9,8 @@ interface FormInputProps {
   required?: boolean;
   error?: string;
   className?: string;
+  min?: number;
+  max?: number;
 }
 
 const FormInput: React.FC<FormInputProps> = ({
@@ -20,6 +22,8 @@ const FormInput: React.FC<FormInputProps> = ({
   required = false,
   error,
   className = '',
+  min,
+  max,
 }) => {
   return (
     <div className={`mb-4 ${className}`}>
@@ -33,6 +37,8 @@ const FormInput: React.FC<FormInputProps> = ({
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         required={required}
+        min={min}
+        max={max}
         className={`w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
           error ? 'border-red-500' : ''
         }`}

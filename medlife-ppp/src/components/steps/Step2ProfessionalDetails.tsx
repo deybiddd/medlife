@@ -70,9 +70,11 @@ const Step2ProfessionalDetails: React.FC<Step2Props> = ({ data, onChange, errors
         label="Years Licensed"
         type="number"
         value={data.yearsLicensed}
-        onChange={(value) => handleChange('yearsLicensed', parseInt(value) || 0)}
+        onChange={(value) => handleChange('yearsLicensed', Math.max(0, parseInt(value) || 0))}
         placeholder="How many years have you been licensed?"
         required
+        min={0}
+        max={100}
         error={errors.yearsLicensed?.toString()}
       />
     </div>

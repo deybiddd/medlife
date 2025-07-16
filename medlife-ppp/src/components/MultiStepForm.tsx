@@ -125,12 +125,12 @@ const MultiStepForm: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (validateStep(currentStep)) {
       if (currentStep < TOTAL_STEPS) {
         setCurrentStep(currentStep + 1);
       } else {
-        handleSubmit();
+        await handleSubmit();
       }
     }
   };
@@ -141,27 +141,32 @@ const MultiStepForm: React.FC = () => {
     }
   };
 
-  const handleSubmit = () => {
-    // Clear saved data after successful submission
-    localStorage.removeItem('medlife-application-data');
-    localStorage.removeItem('medlife-application-step');
-    
-    // Create application submission object
-    const submissionData = {
-      ...applicationData,
-      id: Date.now().toString(), // Simple ID generation
-      submittedAt: new Date().toISOString(),
-      status: 'pending' as const,
-      lastUpdated: new Date().toISOString(),
-    };
-    
-    // Add to admin system
-    addApplication(submissionData);
-    
-    console.log('Application submitted:', submissionData);
-    
-    // Navigate to success page
-    navigate('/application/success');
+  const handleSubmit = async () => {
+    try {
+      // Clear saved data after successful submission
+      localStorage.removeItem('medlife-application-data');
+      localStorage.removeItem('medlife-application-step');
+      
+      // Create application submission object with proper document conversion
+      const submissionData: any = {
+        ...applicationData,
+        id: Date.now().toString(), // Simple ID generation
+        submittedAt: new Date().toISOString(),
+        status: 'pending' as const,
+        lastUpdated: new Date().toISOString(),
+      };
+      
+      // Add to admin system
+      await addApplication(submissionData);
+      
+      console.log('Application submitted:', submissionData);
+      
+      // Navigate to success page
+      navigate('/success');
+    } catch (error) {
+      console.error('Error submitting application:', error);
+      // Could show an error message to user here
+    }
   };
 
   const renderCurrentStep = () => {

@@ -4,19 +4,23 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This repository is a newly initialized project ready for development.
+This is a fully functional MedLife Partnership Portal with React + TypeScript frontend and Supabase backend integration.
 
 ## Repository Structure
 
-The repository currently contains:
-- `CLAUDE.md` - This guidance file
+The repository contains:
+- `CLAUDE.md` - This guidance file  
+- `medlife-ppp/` - Main application directory
+- `medlife-ppp/src/` - React application source code
+- `medlife-ppp/database/` - Supabase database schema
+- `medlife-ppp/.env.local` - Environment variables (Supabase credentials)
 
 ## Development Commands
 
-- `cd medlife-ppp && npm install` - Install dependencies
-- `cd medlife-ppp && npm run dev` - Start development server (http://localhost:5173/)
-- `cd medlife-ppp && npm run build` - Build for production
-- `cd medlife-ppp && npm run preview` - Preview production build
+- `npm install` - Install dependencies
+- `npm run dev` - Start development server (http://localhost:3000/)
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build
 
 ## Architecture Overview
 

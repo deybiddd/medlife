@@ -44,13 +44,27 @@ const mockApplication: ApplicationSubmission = {
 
 const ApplicationDetail: React.FC = () => {
   const params = useParams<{ id: string }>();
-  const { getApplicationById, updateApplicationStatus } = useAdmin();
+  const { getApplicationById, updateApplicationStatus, downloadDocument } = useAdmin();
+  
+  // DEBUG: Log URL parameter and application lookup
+  console.log('=== APPLICATION DETAIL DEBUG ===');
+  console.log('URL Parameter ID:', params.id);
   
   // Get application by ID, fallback to mock data
   const foundApplication = params.id ? getApplicationById(params.id) : null;
+  console.log('Found application from getApplicationById:', foundApplication);
+  console.log('Using mock data fallback:', !foundApplication);
+  
   const [application, setApplication] = useState<ApplicationSubmission>(
     foundApplication || mockApplication
   );
+  
+  // DEBUG: Log final application and document data
+  console.log('Final application object:', application);
+  console.log('Document upload object:', application.documentUpload);
+  console.log('Medical License:', application.documentUpload.medicalLicense);
+  console.log('Resume:', application.documentUpload.resume);
+  console.log('Certifications:', application.documentUpload.certifications);
   const [reviewNotes, setReviewNotes] = useState(application.reviewNotes || '');
   const [showStatusModal, setShowStatusModal] = useState(false);
   const [newStatus, setNewStatus] = useState<ApplicationStatus>(application.status);
@@ -265,36 +279,126 @@ const ApplicationDetail: React.FC = () => {
         {/* Documents */}
         <div className="bg-white rounded-lg shadow p-6 lg:col-span-2">
           <h3 className="text-lg font-bold text-gray-900 mb-4">Documents</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="space-y-6">
+            {/* Medical License */}
             <div className="border border-gray-200 rounded-lg p-4">
-              <h4 className="font-medium text-gray-900 mb-2">Medical License</h4>
+              <h4 className="font-medium text-gray-900 mb-3">Medical License</h4>
               {application.documentUpload.medicalLicense ? (
-                <div className="text-sm text-green-600">
-                  ✓ Document uploaded
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <svg className="w-5 h-5 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">{application.documentUpload.medicalLicense.name}</p>
+                      <p className="text-xs text-gray-500">{(application.documentUpload.medicalLicense.size / 1024).toFixed(1)} KB</p>
+                    </div>
+                  </div>
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() => {
+                        console.log('=== DOWNLOAD DEBUG - Medical License ===');
+                        console.log('File path:', application.documentUpload.medicalLicense!.path);
+                        console.log('File name:', application.documentUpload.medicalLicense!.name);
+                        console.log('Full file object:', application.documentUpload.medicalLicense);
+                        downloadDocument(application.documentUpload.medicalLicense!.path, application.documentUpload.medicalLicense!.name);
+                      }}
+                      className="px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700"
+                    >
+                      Download
+                    </button>
+                  </div>
                 </div>
               ) : (
-                <div className="text-sm text-red-600">
-                  ⚠ Document missing
+                <div className="flex items-center text-red-600">
+                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-1.732-.833-2.5 0L4.314 15.5c-.77.833.192 2.5 1.732 2.5z" />
+                  </svg>
+                  <span className="text-sm">Document missing</span>
                 </div>
               )}
             </div>
+
+            {/* Resume/CV */}
             <div className="border border-gray-200 rounded-lg p-4">
-              <h4 className="font-medium text-gray-900 mb-2">Resume/CV</h4>
+              <h4 className="font-medium text-gray-900 mb-3">Resume/CV</h4>
               {application.documentUpload.resume ? (
-                <div className="text-sm text-green-600">
-                  ✓ Document uploaded
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <svg className="w-5 h-5 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">{application.documentUpload.resume.name}</p>
+                      <p className="text-xs text-gray-500">{(application.documentUpload.resume.size / 1024).toFixed(1)} KB</p>
+                    </div>
+                  </div>
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() => {
+                        console.log('=== DOWNLOAD DEBUG - Resume ===');
+                        console.log('File path:', application.documentUpload.resume!.path);
+                        console.log('File name:', application.documentUpload.resume!.name);
+                        console.log('Full file object:', application.documentUpload.resume);
+                        downloadDocument(application.documentUpload.resume!.path, application.documentUpload.resume!.name);
+                      }}
+                      className="px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700"
+                    >
+                      Download
+                    </button>
+                  </div>
                 </div>
               ) : (
-                <div className="text-sm text-red-600">
-                  ⚠ Document missing
+                <div className="flex items-center text-red-600">
+                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-1.732-.833-2.5 0L4.314 15.5c-.77.833.192 2.5 1.732 2.5z" />
+                  </svg>
+                  <span className="text-sm">Document missing</span>
                 </div>
               )}
             </div>
+
+            {/* Additional Certifications */}
             <div className="border border-gray-200 rounded-lg p-4">
-              <h4 className="font-medium text-gray-900 mb-2">Additional Certifications</h4>
-              <div className="text-sm text-gray-600">
-                {application.documentUpload.certifications.length} files uploaded
-              </div>
+              <h4 className="font-medium text-gray-900 mb-3">Additional Certifications</h4>
+              {application.documentUpload.certifications.length > 0 ? (
+                <div className="space-y-2">
+                  {application.documentUpload.certifications.map((cert, index) => (
+                    <div key={index} className="flex items-center justify-between">
+                      <div className="flex items-center">
+                        <svg className="w-5 h-5 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <div>
+                          <p className="text-sm font-medium text-gray-900">{cert.name}</p>
+                          <p className="text-xs text-gray-500">{(cert.size / 1024).toFixed(1)} KB</p>
+                        </div>
+                      </div>
+                      <div className="flex space-x-2">
+                        <button
+                          onClick={() => {
+                            console.log('=== DOWNLOAD DEBUG - Certification ===');
+                            console.log('File path:', cert.path);
+                            console.log('File name:', cert.name);
+                            console.log('Full file object:', cert);
+                            downloadDocument(cert.path, cert.name);
+                          }}
+                          className="px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700"
+                        >
+                          Download
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="flex items-center text-gray-500">
+                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  <span className="text-sm">No additional certifications uploaded</span>
+                </div>
+              )}
             </div>
           </div>
         </div>

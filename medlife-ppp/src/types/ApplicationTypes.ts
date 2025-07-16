@@ -32,6 +32,20 @@ export interface DocumentUpload {
   certifications: File[];
 }
 
+export interface SubmittedDocument {
+  id: string;
+  name: string;
+  path: string;
+  size: number;
+  type: string;
+}
+
+export interface SubmittedDocumentUpload {
+  medicalLicense: SubmittedDocument | null;
+  resume: SubmittedDocument | null;
+  certifications: SubmittedDocument[];
+}
+
 export interface ApplicationData {
   basicInformation: BasicInformation;
   professionalDetails: ProfessionalDetails;

@@ -4,132 +4,15 @@ import { useAdmin } from '../contexts/AdminContext';
 import type { ApplicationSubmission, ApplicationFilters, ApplicationStatus } from '../types/AdminTypes';
 import { STATUS_LABELS, STATUS_COLORS } from '../types/AdminTypes';
 
-// Mock data for demonstration - only if no real applications exist
-const mockApplications: ApplicationSubmission[] = [
-  {
-    id: '1',
-    submittedAt: '2024-01-15T10:30:00Z',
-    status: 'pending',
-    lastUpdated: '2024-01-15T10:30:00Z',
-    basicInformation: {
-      firstName: 'Dr. Maria',
-      lastName: 'Santos',
-      email: 'maria.santos@email.com',
-      phone: '+63 917 123 4567',
-    },
-    professionalDetails: {
-      licenseNumber: 'PRC-12345',
-      specialization: 'cardiology',
-      clinicName: 'Heart Center Manila',
-      yearsLicensed: 8,
-    },
-    experienceBackground: {
-      yearsExperience: 10,
-      currentPracticeType: 'hospital-employed',
-      patientsPerMonth: 150,
-      additionalCertifications: ['Board Certified Cardiology', 'ACLS Certified'],
-    },
-    partnershipPreferences: {
-      preferredCollaborationType: 'consultation',
-      availabilityHours: 'business-hours',
-      geographicPreference: 'metro-manila',
-      specialInterests: ['Preventive Care', 'Research & Development'],
-    },
-    documentUpload: {
-      medicalLicense: null,
-      resume: null,
-      certifications: [],
-    },
-  },
-  {
-    id: '2',
-    submittedAt: '2024-01-14T14:20:00Z',
-    status: 'under_review',
-    reviewedBy: 'Admin User',
-    lastUpdated: '2024-01-16T09:15:00Z',
-    basicInformation: {
-      firstName: 'Dr. Juan',
-      lastName: 'Cruz',
-      email: 'juan.cruz@email.com',
-      phone: '+63 918 765 4321',
-    },
-    professionalDetails: {
-      licenseNumber: 'PRC-67890',
-      specialization: 'pediatrics',
-      clinicName: 'Children\'s Medical Center',
-      yearsLicensed: 5,
-    },
-    experienceBackground: {
-      yearsExperience: 6,
-      currentPracticeType: 'private-practice',
-      patientsPerMonth: 200,
-      additionalCertifications: ['Board Certified Pediatrics', 'PALS Certified'],
-    },
-    partnershipPreferences: {
-      preferredCollaborationType: 'telemedicine',
-      availabilityHours: 'extended-hours',
-      geographicPreference: 'nationwide',
-      specialInterests: ['Pediatric Care', 'Telemedicine Innovation'],
-    },
-    documentUpload: {
-      medicalLicense: null,
-      resume: null,
-      certifications: [],
-    },
-  },
-  {
-    id: '3',
-    submittedAt: '2024-01-13T16:45:00Z',
-    status: 'approved',
-    reviewedBy: 'Senior Admin',
-    reviewNotes: 'Excellent qualifications and experience. Approved for partnership.',
-    lastUpdated: '2024-01-17T11:30:00Z',
-    basicInformation: {
-      firstName: 'Dr. Anna',
-      lastName: 'Reyes',
-      email: 'anna.reyes@email.com',
-      phone: '+63 919 456 7890',
-    },
-    professionalDetails: {
-      licenseNumber: 'PRC-11111',
-      specialization: 'internal-medicine',
-      clinicName: 'Internal Medicine Associates',
-      yearsLicensed: 12,
-    },
-    experienceBackground: {
-      yearsExperience: 15,
-      currentPracticeType: 'group-practice',
-      patientsPerMonth: 180,
-      additionalCertifications: ['Board Certified Internal Medicine', 'Diabetes Educator'],
-    },
-    partnershipPreferences: {
-      preferredCollaborationType: 'referral-network',
-      availabilityHours: 'business-hours',
-      geographicPreference: 'luzon',
-      specialInterests: ['Chronic Disease Management', 'Preventive Care'],
-    },
-    documentUpload: {
-      medicalLicense: null,
-      resume: null,
-      certifications: [],
-    },
-  },
-];
 
 const AdminDashboard: React.FC = () => {
-  const { applications, updateApplicationStatus, user, logout } = useAdmin();
+  const { applications, updateApplicationStatus, user, logout, loading, refreshApplications } = useAdmin();
   const [filters, setFilters] = useState<ApplicationFilters>({});
   const [filteredApplications, setFilteredApplications] = useState<ApplicationSubmission[]>([]);
 
-  // Initialize with mock data if no real applications exist
+  // Filter applications when filters change
   useEffect(() => {
-    if (applications.length === 0) {
-      setFilteredApplications(mockApplications);
-    }
-  }, [applications]);
-
-  useEffect(() => {
-    let filtered = applications.length > 0 ? applications : mockApplications;
+    let filtered = applications;
 
     // Filter by status
     if (filters.status) {
@@ -157,8 +40,8 @@ const AdminDashboard: React.FC = () => {
     setFilteredApplications(filtered);
   }, [applications, filters]);
 
-  const handleStatusUpdate = (id: string, newStatus: ApplicationStatus, notes?: string) => {
-    updateApplicationStatus(id, newStatus, notes);
+  const handleStatusUpdate = async (id: string, newStatus: ApplicationStatus, notes?: string) => {
+    await updateApplicationStatus(id, newStatus, notes);
   };
 
   const formatDate = (dateString: string) => {
@@ -188,6 +71,17 @@ const AdminDashboard: React.FC = () => {
     return labels[spec] || spec;
   };
 
+  if (loading) {
+    return (
+      <div className="py-8">
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600"></div>
+          <span className="ml-4 text-lg text-gray-600">Loading applications...</span>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="py-8">
       <div className="flex justify-between items-center mb-8">
@@ -203,6 +97,12 @@ const AdminDashboard: React.FC = () => {
           <span className="text-sm text-gray-600">
             Welcome, {user?.name}
           </span>
+          <button
+            onClick={refreshApplications}
+            className="px-3 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 text-sm"
+          >
+            Refresh
+          </button>
           <Link 
             to="/"
             className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"

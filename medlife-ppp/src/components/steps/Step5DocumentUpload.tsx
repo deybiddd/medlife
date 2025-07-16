@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import type { DocumentUpload } from '../../types/ApplicationTypes';
+import { supabase } from '../../lib/supabase';
 
 interface Step5Props {
   data: DocumentUpload;
@@ -8,11 +9,79 @@ interface Step5Props {
 }
 
 const Step5DocumentUpload: React.FC<Step5Props> = ({ data, onChange }) => {
-  const handleFileChange = (field: keyof DocumentUpload, file: File | null) => {
-    onChange({
-      ...data,
-      [field]: field === 'certifications' ? (file ? [...data.certifications, file] : data.certifications) : file,
-    });
+  const [uploading, setUploading] = useState<Record<string, boolean>>({});
+
+  const uploadFileToSupabase = async (file: File, documentType: string): Promise<string | null> => {
+    try {
+      console.log(`Uploading file: ${file.name} (${file.size} bytes) to ${documentType}`);
+      
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}_${Math.random().toString(36).substr(2, 9)}.${fileExt}`;
+      const filePath = `${documentType}/${fileName}`;
+
+      const { data: uploadData, error } = await supabase.storage
+        .from('documents')
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false,
+        });
+
+      if (error) {
+        console.error('Upload error:', error);
+        alert(`Upload failed: ${error.message}`);
+        return null;
+      }
+
+      console.log('File uploaded successfully:', uploadData);
+      return uploadData.path;
+    } catch (error) {
+      console.error('Upload error:', error);
+      alert(`Upload failed: ${error}`);
+      return null;
+    }
+  };
+
+  const handleFileChange = async (field: keyof DocumentUpload, file: File | null) => {
+    if (!file) {
+      onChange({
+        ...data,
+        [field]: field === 'certifications' ? data.certifications : null,
+      });
+      return;
+    }
+
+    // Set uploading state
+    setUploading(prev => ({ ...prev, [field]: true }));
+
+    try {
+      // Upload file to Supabase Storage
+      const filePath = await uploadFileToSupabase(file, field);
+      
+      if (filePath) {
+        // Create a file object with the Supabase path
+        const fileWithPath = Object.assign(file, { supabasePath: filePath });
+        
+        if (field === 'certifications') {
+          onChange({
+            ...data,
+            certifications: [...data.certifications, fileWithPath],
+          });
+        } else {
+          onChange({
+            ...data,
+            [field]: fileWithPath,
+          });
+        }
+      } else {
+        console.error('Failed to upload file');
+        // Handle upload failure
+      }
+    } catch (error) {
+      console.error('Error uploading file:', error);
+    } finally {
+      // Clear uploading state
+      setUploading(prev => ({ ...prev, [field]: false }));
+    }
   };
 
   const handleCertificationRemove = (index: number) => {
@@ -69,16 +138,31 @@ const Step5DocumentUpload: React.FC<Step5Props> = ({ data, onChange }) => {
             <p className="pl-1">or drag and drop</p>
           </div>
           <p className="text-xs text-gray-500">PDF, DOC, DOCX up to 10MB</p>
-          {file && (
-            <div className="mt-2 p-2 bg-blue-50 rounded-md">
-              <p className="text-sm text-blue-700">{file.name}</p>
-              <button
-                type="button"
-                onClick={() => onChange(null)}
-                className="text-xs text-red-600 hover:text-red-800"
-              >
-                Remove file
-              </button>
+          {uploading[label.toLowerCase().replace(/[^a-z0-9]/g, '')] && (
+            <div className="mt-2 p-2 bg-yellow-50 rounded-md">
+              <div className="flex items-center">
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600 mr-2"></div>
+                <p className="text-sm text-blue-700">Uploading...</p>
+              </div>
+            </div>
+          )}
+          {file && !uploading[label.toLowerCase().replace(/[^a-z0-9]/g, '')] && (
+            <div className="mt-2 p-2 bg-green-50 rounded-md">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <svg className="w-4 h-4 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <p className="text-sm text-green-700">{file.name}</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => onChange(null)}
+                  className="text-xs text-red-600 hover:text-red-800"
+                >
+                  Remove file
+                </button>
+              </div>
             </div>
           )}
         </div>
@@ -138,11 +222,23 @@ const Step5DocumentUpload: React.FC<Step5Props> = ({ data, onChange }) => {
                   multiple
                   className="sr-only"
                   accept=".pdf,.doc,.docx"
-                  onChange={(e) => {
+                  onChange={async (e) => {
                     const files = Array.from(e.target.files || []);
+                    
+                    // Upload each file individually
+                    const uploadPromises = files.map(async (file) => {
+                      const filePath = await uploadFileToSupabase(file, 'certifications');
+                      if (filePath) {
+                        return Object.assign(file, { supabasePath: filePath });
+                      }
+                      return file;
+                    });
+                    
+                    const uploadedFiles = await Promise.all(uploadPromises);
+                    
                     onChange({
                       ...data,
-                      certifications: [...data.certifications, ...files],
+                      certifications: [...data.certifications, ...uploadedFiles],
                     });
                   }}
                 />
@@ -156,8 +252,13 @@ const Step5DocumentUpload: React.FC<Step5Props> = ({ data, onChange }) => {
           <div className="mt-4 space-y-2">
             <p className="text-sm font-medium text-gray-700">Uploaded Certifications:</p>
             {data.certifications.map((file, index) => (
-              <div key={index} className="flex items-center justify-between p-2 bg-blue-50 rounded-md">
-                <span className="text-sm text-blue-700">{file.name}</span>
+              <div key={index} className="flex items-center justify-between p-2 bg-green-50 rounded-md">
+                <div className="flex items-center">
+                  <svg className="w-4 h-4 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span className="text-sm text-green-700">{file.name}</span>
+                </div>
                 <button
                   type="button"
                   onClick={() => handleCertificationRemove(index)}

@@ -6,7 +6,10 @@
       "Bash(pkill:*)",
       "Bash(true)",
       "Bash(timeout 5 npm run dev)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(grep:*)",
+      "Bash(npm install:*)",
+      "Bash(ss:*)"
     ],
     "deny": []
   }

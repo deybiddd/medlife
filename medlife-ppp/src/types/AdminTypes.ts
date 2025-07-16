@@ -1,12 +1,17 @@
-import type { ApplicationData } from './ApplicationTypes';
+import type { SubmittedDocumentUpload, BasicInformation, ProfessionalDetails, ExperienceBackground, PartnershipPreferences } from './ApplicationTypes';
 
-export interface ApplicationSubmission extends ApplicationData {
+export interface ApplicationSubmission {
   id: string;
   submittedAt: string;
   status: ApplicationStatus;
   reviewedBy?: string;
   reviewNotes?: string;
   lastUpdated: string;
+  basicInformation: BasicInformation;
+  professionalDetails: ProfessionalDetails;
+  experienceBackground: ExperienceBackground;
+  partnershipPreferences: PartnershipPreferences;
+  documentUpload: SubmittedDocumentUpload;
 }
 
 export type ApplicationStatus = 
